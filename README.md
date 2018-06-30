@@ -8,6 +8,6 @@ EJS as the templating engine with mongodb as the database.
 - Go on `localhost:7000` to see the project
 
 ### Things to do
-[x] Basic Service is done
-[ ] Improve the UI
-[ ] Push the project on Heroku
+- [x] Basic Service is done
+- [ ] Improve the UI
+- [ ] Push the project on Heroku
