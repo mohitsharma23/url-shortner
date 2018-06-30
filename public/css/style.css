@@ -1,0 +1,40 @@
+body{
+  background-color: #070e19;
+}
+
+h1{
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  padding-top: 20px;
+}
+
+hr{
+  border: none;
+  height: 1px;
+  background-color: white;
+}
+
+section{
+  text-align: center;
+
+}
+
+form{
+  display: flex;
+  width: 60%;
+  margin: auto;
+}
+
+.url{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+}
+
+p{
+  color: white;
+  margin: auto;
+  font-size: 25px;
+}

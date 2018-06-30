@@ -9,42 +9,55 @@ const {shortenUrl} = require('./models/url');
 
 const app = express();
 const port = process.env.PORT || 7000;
-const baseUrl = 'http://gho.st/';
+var url_shortened;
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, 'views/index.html'));
+  res.render('index', {url_shortened: ''});
 });
 
-app.post('/shorten', (req, res) => {
-  var url = req.body.url;
-  if(validUrl.isUri(url)){
-    //valid url
-    var uniq = shortid.generate();
-    console.log(uniq);
-    var shorturl = baseUrl + uniq;
-    console.log(shorturl);
-    var ss = new shortenUrl({
-      originalUrl: url,
-      shortUrl: shorturl
-    });
-    ss.save().then((url) => {
-      res.send(url);
-    }, (e) => {
-      res.status(400).send(e);
-    });
 
+app.post('/', (req, res) => {
+  let url = req.body.url;
+  if(validUrl.isUri(url)){
+    shortenUrl.findOne({originalUrl: url}, (err, doc) => {
+      if(!doc){
+        let uniq = shortid.generate();
+        let shorturl = uniq;
+        let ss = new shortenUrl({
+          originalUrl: url,
+          shortUrl: shorturl
+        });
+        ss.save().then((url) => {
+          res.render('index', {url_shortened: 'http://localhost:7000/'+url.shortUrl});
+        }, (e) => {
+          res.status(400).send(e);
+        });
+      }else{
+        res.render('index', {url_shortened: 'http://localhost:7000/'+doc.shortUrl});
+      }
+    });
   }else{
-    //not a valid url
-    res.status(404).send('Not a valid URL');
+    res.render('index', {url_shortened: 'Not a valid URL'});
   }
 });
 
-app.get('/:redirect_short', (req, res) => {
-  
+
+
+app.get('/:encoded', (req, res) => {
+  let ghostCode = req.params.encoded;
+
+  shortenUrl.findOne({shortUrl: ghostCode}, (err, doc) => {
+    if(doc){
+      res.redirect(doc.originalUrl);
+    }else{
+      res.render('index');
+    }
+  });
 });
 
 
